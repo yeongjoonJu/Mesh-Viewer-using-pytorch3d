@@ -36,18 +36,18 @@ python main.py
 
 You can open .obj file after pressing file button.
 
-![screenshot1](/home/yj/projects/mesh_viewer/example/screenshot1.png)
+![screenshot1](./example/screenshot1.png)
 
-![](/home/yj/projects/mesh_viewer/example/screenshot2.png)
+![](./example/screenshot2.png)
 
 **Rotation**
 
 You can rotate object through dragging mouse.
 
-![](/home/yj/projects/mesh_viewer/example/screenshot3.png)
+![](./example/screenshot3.png)
 
 **Zoom in/out**
 
 You can zoom in/out through wheeling.
 
-![](/home/yj/projects/mesh_viewer/example/screenshot4.png)
+![](./example/screenshot4.png)
