@@ -31,9 +31,10 @@ python main.py
 ~~~
 
 Rotate an object : dragging the mouse
+
 Zoom in / out an object : wheeling the mouse 
-Change the illumination position :
-**W -  move to up, A - move to left, S - move to down, D - move to right**
+
+Change the illumination position :<br>**W -  move to up, A - move to left, S - move to down, D - move to right**<br>
 **Q - move to front, E - move to back**
 
 ### Examples
