@@ -30,7 +30,11 @@ pip install pillow
 python main.py
 ~~~
 
-
+Rotate an object : dragging the mouse
+Zoom in / out an object : wheeling the mouse 
+Change the illumination position :
+**W -  move to up, A - move to left, S - move to down, D - move to right**
+**Q - move to front, E - move to back**
 
 ### Examples
 
@@ -51,3 +55,9 @@ You can rotate object through dragging mouse.
 You can zoom in/out through wheeling.
 
 ![](./example/screenshot4.png)
+
+**Change the illumination**
+
+You can change the illumination using the keyboard.
+
+![](./example/screenshot5.png)

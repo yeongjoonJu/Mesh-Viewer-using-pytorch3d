@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QLabel,
         QMainWindow, QMenu, QMessageBox, QScrollArea, QSizePolicy, QInputDialog)
 import os
 import numpy as np
-from matplotlib import cm
 from PIL import Image, ImageFont, ImageDraw
 
 import sys
@@ -119,10 +118,51 @@ class MeshViewer(QMainWindow):
         dist = dist - e.angleDelta().y()*0.001
         self.render_for_camera(dist, elev, azim)
 
+    def change_light_location(self, x, y, z):
+        image = self.meshLoader.change_light([x, y, z])
+        image = image * 255
+        image = image.astype('uint8')
+        
+        img = Image.fromarray(image)
+        draw = ImageDraw.Draw(img)
+        draw.text((10,20), "Illumination x: {0}, y: {1}, z: {2}"
+        .format(x, y, z), (255,255,255), font=self.font)
+            
+        self.openImage(np.array(img))
             
     def keyPressEvent(self, e):
+        # Key a
         if e.key() == 65:
-            pass
-                                                
+            x, y, z = self.meshLoader.get_light_location()
+            x -= 0.5
+            self.change_light_location(x, y, z)
+
+        # Key d                                  
         elif e.key() == 68:
-            pass
+            x, y, z = self.meshLoader.get_light_location()
+            x += 0.5
+            self.change_light_location(x, y, z)
+            
+        # Key w
+        elif e.key() == 87:
+            x, y, z = self.meshLoader.get_light_location()
+            y -= 0.5
+            self.change_light_location(x, y, z)
+
+        # Key s
+        elif e.key() == 83:
+            x, y, z = self.meshLoader.get_light_location()
+            y += 0.5
+            self.change_light_location(x, y, z)
+
+        # Key e
+        elif e.key() == 69:
+            x, y, z = self.meshLoader.get_light_location()
+            z += 0.5
+            self.change_light_location(x, y, z)
+        
+        # Key q
+        elif e.key() == 81:
+            x, y, z = self.meshLoader.get_light_location()
+            z -= 0.5
+            self.change_light_location(x, y, z)
