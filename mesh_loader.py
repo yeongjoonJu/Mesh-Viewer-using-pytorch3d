@@ -12,8 +12,9 @@ from pytorch3d.renderer import (
     PointLights, HardPhongShader,
     RasterizationSettings,
     MeshRenderer, MeshRasterizer,
-    TexturedSoftPhongShader, BlendParams
+    BlendParams
 )
+from pytorch3d.renderer.mesh.shader import TexturedSoftPhongShader
 import numpy as np
 
 
@@ -30,7 +31,7 @@ class MeshLoader(object):
 
         # Create a phong renderer by composing a rasterizer and a shader
         self.phong_renderer = MeshRenderer(
-                rasterizer=MeshRasterizer(
+            rasterizer=MeshRasterizer(
                 cameras=self.cameras,
                 raster_settings=self.raster_settings
             ),
@@ -42,9 +43,9 @@ class MeshLoader(object):
         self.cameras = OpenGLPerspectiveCameras(device=self.device)
 
         self.raster_settings = RasterizationSettings(
-            image_size = 1024,
+            image_size = 512,
             blur_radius = 0.0,
-            faces_per_pixel=1,
+            faces_per_pixel=2,
         )
 
         self.set_phong_renderer([0.0,3.0,5.0])
@@ -55,28 +56,38 @@ class MeshLoader(object):
         
         if extension == 'obj':
             verts, faces, aux = load_obj(obj_filename)
-            verts_idx = faces.verts_idx
+            verts_idx = faces.verts_idx        
         elif extension == 'ply':
             verts, faces = load_ply(obj_filename)
             verts_idx = faces
 
-        # Initialize each vertex to be white in color
-        verts_rgb = torch.ones_like(verts)[None]
-        textures = Textures(faces_uvs=faces.textures_idx[None,...], verts_uvs=aux.verts_uvs[None,...], verts_rgb=verts_rgb.to(self.device))
+        if os.path.exists(obj_filename[:-3]+'npy'):
+            colors = np.load(obj_filename[:-3]+'npy')
+            verts_rgb = torch.FloatTensor(colors[...,[2,1,0]])
+            verts_rgb = verts_rgb.unsqueeze(0)
+            verts_rgb = verts_rgb.to(self.device)
+        else:
+            # Initialize each vertex to be white in color - bgr
+            verts_rgb = torch.ones_like(verts)[None]
+            verts_rgb = verts_rgb.to(self.device)
+            #textures = Textures(faces_uvs=faces.textures_idx[None,...], verts_uvs=aux.verts_uvs[None,...], verts_rgb=verts_rgb.to(self.device))
 
         # Create a Meshes object for the face.
         self.face_mesh = Meshes(
             verts = [verts.to(self.device)],
             faces = [verts_idx.to(self.device)],
-            textures = textures
+            textures= Textures(verts_rgb=verts_rgb)
         )
+
+    def set_camera_location(self, distance, elevation, azimuth):
+        self.distance = distance
+        self.elevation = elevation
+        self.azimuth = azimuth
 
     def render(self, distance=3, elevation=1.0, azimuth=0.0):
         """ Select the viewpoint using spherical angles"""
 
-        self.distance = distance
-        self.elevation = elevation
-        self.azimuth = azimuth
+        self.set_camera_location(distance, elevation, azimuth)
 
         # Get the position of the camera based on the spherical angles
         R, T = look_at_view_transform(distance, elevation, azimuth, device=self.device)

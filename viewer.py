@@ -52,11 +52,13 @@ class MeshViewer(QMainWindow):
         self.fname = QFileDialog.getOpenFileName(self, 'Open obj file', './data')        
         self.meshLoader.load(self.fname[0])
         self.loaded = True
-        image = self.meshLoader.render()
-        image = image * 255
-        image = image.astype('uint8')
-        self.openImage(image)
-    
+        # image = self.meshLoader.render()
+        # image = image * 255
+        # image = image.astype('uint8')
+        # self.openImage(image)
+        self.meshLoader.set_camera_location(280.0, 0.0, 0.0)
+        self.change_light_location(0.0, 0.0, 150.0)
+            
 
     def toQImage(self, im, copy=False):
         if im is None:
@@ -115,7 +117,7 @@ class MeshViewer(QMainWindow):
             return
         dist, elev, azim = self.meshLoader.get_camera_params()
         # Adjust rotation speed
-        dist = dist - e.angleDelta().y()*0.001
+        dist = dist - e.angleDelta().y()*0.01
         self.render_for_camera(dist, elev, azim)
 
     def change_light_location(self, x, y, z):
