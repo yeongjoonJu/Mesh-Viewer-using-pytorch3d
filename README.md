@@ -39,6 +39,10 @@ Change the illumination position :<br>**W -  move to up, A - move to left, S - m
 
 ### Examples
 
+Texture mapping with color value per vertex [update August 26th]
+
+![](./example/screenshot6.png)
+
 You can open .obj file after pressing file button.
 
 ![screenshot1](./example/screenshot1.png)
